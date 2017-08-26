@@ -27,10 +27,17 @@ object FalloutSolver extends App {
     }
 
     println("Attempting to solve...")
-    println(solve(mm).getOrElse("No solution yet"))
+    val results = solve(mm)
+    if(results.size == 1) {
+      println(s"Solution: ${results.head}")
+    }
+    else {
+      println("No solution yet.  Try guessing one of the following:")
+      results.foreach(println(_))
+    }
   }
 
-  def solve(wordMap: Map[String, Option[Int]]) : Option[String] = {
+  def solve(wordMap: Map[String, Option[Int]]) : Set[String] = {
     // Collect only words that have a known number of correct characters
     val (guessed, candidates) = wordMap.partition{case (_,v) => v.isDefined}
     val (partialMatches, neverMatches) = guessed.partition{case (_,v) => v.get != 0}
@@ -45,7 +52,7 @@ object FalloutSolver extends App {
     }
     val remaining = candidates -- (nonMatchingWords ++ cantMatches)
 
-    if(remaining.size == 1) Some(remaining.head._1) else None
+    remaining.keySet
   }
 
   def numMatchingChars(w1:String, w2:String) : Int = {
