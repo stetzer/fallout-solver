@@ -35,25 +35,15 @@ object FalloutSolver extends App {
     val (guessed, candidates) = wordMap.partition{case (_,v) => v.isDefined}
     val (partialMatches, neverMatches) = guessed.partition{case (_,v) => v.get != 0}
 
-    println(s"guessed: $guessed")
-    println(s"candidates: $candidates")
-
-    // Now collect the words that don't match the known correct character counts
-    val nonMatchingWords = candidates.keys.filter{word =>
-      !guessed.exists{case (k,v) =>
-        // Include if the number of correct chars is the same for this word, and it doesn't match any if zero
-        numMatchingChars(k, word) == v.get
-      }
+    // Collect words whose matching char count doesn't match every > 0 correct char count word
+    val nonMatchingWords = if(partialMatches.isEmpty) Set.empty[String] else candidates.keys.filter{word =>
+      partialMatches.count{case(k,v) => numMatchingChars(word, k) == v.get} != partialMatches.size
     }
     // Collect words that have at least one character in common with words that had 0 correct chars
     val cantMatches = if(neverMatches.isEmpty) Set.empty[String] else candidates.keys.filter{word =>
       neverMatches.keySet.map(numMatchingChars(word, _)).max > 0
     }
     val remaining = candidates -- (nonMatchingWords ++ cantMatches)
-
-    println(s"nonMatchingWords: $nonMatchingWords")
-    println(s"cantMatches: $cantMatches")
-    println(s"remaining: $remaining")
 
     if(remaining.size == 1) Some(remaining.head._1) else None
   }
