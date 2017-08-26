@@ -2,8 +2,8 @@ import scala.collection.Map
 import scala.collection.Set
 import scala.util.Try
 
-object FalloutSolver extends App {
-  override def main(args: Array[String]): Unit = {
+object FalloutSolver {
+  def main(args: Array[String]): Unit = {
     if(args.length == 0) {
       System.err.println("Usage: FalloutSolver <word> <correct guesses> <word> <word>")
       System.exit(1)
