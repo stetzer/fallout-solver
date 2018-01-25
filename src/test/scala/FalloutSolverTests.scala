@@ -29,4 +29,9 @@ class FalloutSolverTests extends Specification {
       FalloutSolver.numMatchingChars("TABLE", "CHAIR") must_== 0
     }
   }
+  "Guess Suggestor" >> {
+    "should guess most decisive word" >> {
+      Seq("FOOD", "FOOL") must contain(FalloutSolver.suggestGuess(Set("DUDE", "FOAM", "FOOD", "FOOL")))
+    }
+  }
 }

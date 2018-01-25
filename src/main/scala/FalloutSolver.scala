@@ -12,7 +12,7 @@ object FalloutSolver {
     var i = 0
     val mm = collection.mutable.HashMap.empty[String, Option[Int]]
     while(i < args.length) {
-      val word = args(i)
+      val word = args(i).toUpperCase
       // Is the next arg the number of correct chars?
       val t = Try(args(i+1).toInt)
 
@@ -26,6 +26,11 @@ object FalloutSolver {
       }
     }
 
+    if(mm.map(_._1.length).toList.distinct.size > 1) {
+      System.err.println("One or more specified words are of varying lengths.")
+      System.exit(2)
+    }
+
     println("Attempting to solve...")
     val results = solve(mm)
     if(results.size == 1) {
@@ -33,7 +38,7 @@ object FalloutSolver {
     }
     else {
       println("No solution yet.  Try guessing one of the following:")
-      results.foreach(println(_))
+      println(suggestGuess(results))
     }
   }
 
@@ -63,5 +68,19 @@ object FalloutSolver {
     w1.toCharArray.zipWithIndex.map{case (c, i) =>
       if(c == w2.charAt(i)) 1 else 0
     }.sum
+  }
+
+  def suggestGuess(words:Set[String]) : String = {
+    val wordStack = collection.mutable.Stack[String](words.toSeq:_*)
+    val matchChars = collection.mutable.Map.empty[String, Int]
+    while(wordStack.size > 1) {
+      val word = wordStack.pop()
+      val maxMatching = wordStack.map(w => numMatchingChars(w, word)).max
+
+      matchChars.put(word, maxMatching)
+    }
+
+    // Pick the first word with the most matching characters (in same position) as other words
+    matchChars.toSeq.sortBy(-_._2).head._1
   }
 }
