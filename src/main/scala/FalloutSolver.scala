@@ -28,6 +28,7 @@ object FalloutSolver {
 
     if(mm.map(_._1.length).toList.distinct.size > 1) {
       System.err.println("One or more specified words are of varying lengths.")
+      mm.keys.foreach(System.err.println(_))
       System.exit(2)
     }
 
