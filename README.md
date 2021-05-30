@@ -13,11 +13,11 @@ Items that would be nice to implement in the future:
 ## Build Instructions
 
 ```
-sbt assembly
+sbt nativeLink
 ```
 
 ## Usage
 
 ```
-java -jar ./target/scala-2.12/fallout-solver-assembly-0.1.jar OVERLOOKED 1 INTERFERES 2 CUCARACHAS THEREAFTER REBELLIOUS XENOPHOBES
+./target/scala-2.13/fallout-solver-out OVERLOOKED 1 INTERFERES 2 CUCARACHAS THEREAFTER REBELLIOUS XENOPHOBES
 ```
