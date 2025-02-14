@@ -1,3 +1,5 @@
+package solver
+
 import scala.collection.Map
 import scala.collection.Set
 import scala.util.Try
@@ -56,8 +58,8 @@ object FalloutSolver {
     val cantMatches = if(neverMatches.isEmpty) Set.empty[String] else candidates.keys.filter{word =>
       neverMatches.keySet.map(numMatchingChars(word, _)).max > 0
     }
-    val remaining = candidates -- (nonMatchingWords ++ cantMatches)
-
+    val remaining = candidates.view.filterKeys((k:String) => !nonMatchingWords.toSet.contains(k) && !cantMatches.toSet.contains(k))
+    
     remaining.keySet
   }
 
@@ -72,16 +74,14 @@ object FalloutSolver {
   }
 
   def suggestGuess(words:Set[String]) : String = {
-    val wordStack = collection.mutable.Stack[String](words.toSeq:_*)
-    val matchChars = collection.mutable.Map.empty[String, Int]
-    while(wordStack.size > 1) {
-      val word = wordStack.pop()
-      val maxMatching = wordStack.map(w => numMatchingChars(w, word)).max
-
-      matchChars.put(word, maxMatching)
+    val matchChars = collection.mutable.Map.empty[String, (Int, Int)]
+    words.foreach { word =>
+      val matches = words.toList.filter(_ != word).map(w => numMatchingChars(w, word))
+      val maxMatching = matches.max
+      val numAtMax = matches.count(_ == maxMatching)
+      matchChars.put(word, (maxMatching, numAtMax))
     }
-
     // Pick the first word with the most matching characters (in same position) as other words
-    matchChars.toSeq.sortBy(-_._2).head._1
+    matchChars.toSeq.sortBy(w => (-w._2._1, -w._2._2)).head._1
   }
 }
