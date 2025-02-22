@@ -6,14 +6,18 @@ A boredom-inspired take on solving the Fallout series' computer hacking puzzles.
 
 Items that would be nice to implement in the future:
 
-* Benchmarking (understanding performance of different puzzle sizes)
 * Performance improvements (initial algorithm could be improved)
-* Better suggestions (app doesn't currently differentiate between candidates for next guess)
 
 ## Build Instructions
 
 ```
 sbt nativeLink
+```
+
+## Benchmarking
+
+```
+sbt 'Jmh/run -prof async:libPath=<path to async profiler> -prof gc .*'
 ```
 
 ## Usage

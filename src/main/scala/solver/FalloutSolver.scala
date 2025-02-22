@@ -68,9 +68,13 @@ object FalloutSolver {
       throw new Exception(s"Words have to match in length: $w1, $w2")
     }
 
-    w1.toCharArray.zipWithIndex.map{case (c, i) =>
-      if(c == w2.charAt(i)) 1 else 0
-    }.sum
+    var count = 0
+    var i = 0
+    while (i < w1.length) {
+      if (w1.charAt(i) == w2.charAt(i)) count += 1
+      i += 1
+    }
+    count
   }
 
   def suggestGuess(words:Set[String]) : String = {
