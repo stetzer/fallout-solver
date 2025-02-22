@@ -51,9 +51,12 @@ object FalloutSolver {
     val (partialMatches, neverMatches) = guessed.partition{case (_,v) => v.get != 0}
 
     // Collect words whose matching char count doesn't match every > 0 correct char count word
-    val nonMatchingWords = if(partialMatches.isEmpty) Set.empty[String] else candidates.keys.filter{word =>
-      partialMatches.count{case(k,v) => numMatchingChars(word, k) == v.get} != partialMatches.size
+    val nonMatchingWords = if(partialMatches.isEmpty) Set.empty[String] else candidates.keys.filter { word =>
+      partialMatches.exists { case (k, v) => 
+        numMatchingChars(word, k) != v.get
+      }
     }
+    
     // Collect words that have at least one character in common with words that had 0 correct chars
     val cantMatches = if(neverMatches.isEmpty) Set.empty[String] else candidates.keys.filter{word =>
       neverMatches.keySet.map(numMatchingChars(word, _)).max > 0
